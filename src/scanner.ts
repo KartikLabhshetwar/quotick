@@ -60,13 +60,7 @@ export class Scanner {
      * Scan and convert existing template literals in the workspace
      */
     static async scanWorkspace(): Promise<void> {
-        const config = vscode.workspace.getConfiguration('quicktick');
-        const supportedLanguages = config.get<string[]>('supportedLanguages', [
-            'javascript',
-            'typescript',
-            'javascriptreact',
-            'typescriptreact'
-        ]);
+        // Note: Configuration could be used here for language filtering
         
         const files = await vscode.workspace.findFiles(
             `**/*.{js,ts,jsx,tsx}`,
@@ -189,7 +183,8 @@ export class Scanner {
         // Apply conversions in reverse order to maintain positions
         for (let i = templateLiterals.length - 1; i >= 0; i--) {
             const literal = templateLiterals[i];
-            const conversionEdit = QuoteConverter.convertToBacktick(document, literal);
+            const conversionResult = QuoteConverter.convertToBackticks(document, literal);
+            const conversionEdit = conversionResult.edit || new vscode.WorkspaceEdit();
             
             // Merge edits
             for (const [uri, textEdits] of conversionEdit.entries()) {

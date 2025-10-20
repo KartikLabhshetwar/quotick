@@ -1,41 +1,87 @@
-import * as vscode from 'vscode';
 import * as assert from 'assert';
+import * as vscode from 'vscode';
 import { QuoteConverter } from '../../src/converter';
+import { QuoteRange } from '../../src/types';
 
 suite('QuoteConverter Tests', () => {
-    test('should detect backticks in content', () => {
-        const content = 'Hello `world` ${name}';
-        const hasBackticks = QuoteConverter.hasBackticks(content);
+    test('convertToBackticks should create correct edit', () => {
+        // Mock document
+        const mockDocument = {
+            uri: vscode.Uri.file('/test.js')
+        } as vscode.TextDocument;
         
-        assert.equal(hasBackticks, true);
+        const quoteRange: QuoteRange = {
+            start: new vscode.Position(0, 12),
+            end: new vscode.Position(0, 24),
+            quoteType: '"',
+            content: 'hello world',
+            lineNumber: 0
+        };
+        
+        const result = QuoteConverter.convertToBackticks(mockDocument, quoteRange);
+        
+        assert.strictEqual(result.success, true);
+        assert.ok(result.edit);
+        
+        // Check that the edit contains the correct replacements
+        const edits = result.edit!.get(mockDocument.uri);
+        assert.ok(edits);
+        assert.strictEqual(edits.length, 2);
+        
+        // First edit should replace opening quote with backtick
+        assert.strictEqual(edits[0].newText, '`');
+        assert.strictEqual(edits[0].range.start.character, 12);
+        
+        // Second edit should replace closing quote with backtick
+        assert.strictEqual(edits[1].newText, '`');
+        assert.strictEqual(edits[1].range.start.character, 24);
     });
     
-    test('should not detect backticks when none present', () => {
-        const content = 'Hello world ${name}';
-        const hasBackticks = QuoteConverter.hasBackticks(content);
+    test('convertBackticksToQuotes should create correct edit', () => {
+        // Mock document
+        const mockDocument = {
+            uri: vscode.Uri.file('/test.js')
+        } as vscode.TextDocument;
         
-        assert.equal(hasBackticks, false);
+        const quoteRange: QuoteRange = {
+            start: new vscode.Position(0, 12),
+            end: new vscode.Position(0, 24),
+            quoteType: '`',
+            content: 'hello world',
+            lineNumber: 0
+        };
+        
+        const result = QuoteConverter.convertBackticksToQuotes(mockDocument, quoteRange, '"');
+        
+        assert.strictEqual(result.success, true);
+        assert.ok(result.edit);
+        
+        // Check that the edit contains the correct replacements
+        const edits = result.edit!.get(mockDocument.uri);
+        assert.ok(edits);
+        assert.strictEqual(edits.length, 2);
+        
+        // First edit should replace opening backtick with quote
+        assert.strictEqual(edits[0].newText, '"');
+        assert.strictEqual(edits[0].range.start.character, 12);
+        
+        // Second edit should replace closing backtick with quote
+        assert.strictEqual(edits[1].newText, '"');
+        assert.strictEqual(edits[1].range.start.character, 24);
     });
     
-    test('should detect template literal syntax', () => {
-        const content = 'Hello ${name} world';
-        const hasTemplate = QuoteConverter.hasTemplateLiteral(content);
+    test('findAllTemplateLiterals should find template literals', () => {
+        // Mock document with template literals
+        const mockDocument = {
+            getText: () => 'const str1 = "hello ${world}"; const str2 = "no template";',
+            positionAt: (offset: number) => new vscode.Position(0, offset)
+        } as vscode.TextDocument;
         
-        assert.equal(hasTemplate, true);
-    });
-    
-    test('should not detect template literal when none present', () => {
-        const content = 'Hello world';
-        const hasTemplate = QuoteConverter.hasTemplateLiteral(content);
+        const results = QuoteConverter.findAllTemplateLiterals(mockDocument);
         
-        assert.equal(hasTemplate, false);
-    });
-    
-    test('should find template literals with regex', () => {
-        const text = 'const message = "Hello ${name}"; const greeting = \'Welcome ${user}!\';';
-        const templateLiterals = text.match(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g);
-        
-        assert.ok(templateLiterals);
-        assert.equal(templateLiterals!.length, 2);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].content, 'hello ${world}');
+        assert.strictEqual(results[0].hasTemplateSyntax, true);
+        assert.strictEqual(results[0].isValidContext, true);
     });
 });

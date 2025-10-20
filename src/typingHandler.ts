@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { QuoteConverter } from './converter';
+import { TemplateLiteralDetector } from './templateLiteralDetector';
 
 export class TypingHandler {
     private disposables: vscode.Disposable[] = [];
@@ -82,13 +83,13 @@ export class TypingHandler {
                 console.log('QuickTick: Checking template literal:', templateLiteral.content);
                 
                 // Check if string contains backticks (skip if true)
-                if (QuoteConverter.hasBackticks(templateLiteral.content)) {
+                if (TemplateLiteralDetector.hasBackticks(templateLiteral.content)) {
                     console.log('QuickTick: Skipping - contains backticks');
                     continue;
                 }
                 
                 // Check if in valid context
-                if (!QuoteConverter.isValidContext(document, templateLiteral.start)) {
+                if (!TemplateLiteralDetector.isValidContext(document, templateLiteral.start)) {
                     console.log('QuickTick: Skipping - invalid context');
                     continue;
                 }
@@ -137,23 +138,27 @@ export class TypingHandler {
     
     private async convertQuotesToBackticks(document: vscode.TextDocument, quoteRange: any): Promise<void> {
         try {
-            const edit = QuoteConverter.convertToBacktick(document, quoteRange);
+            const result = QuoteConverter.convertToBackticks(document, quoteRange);
             
-            // Apply the edit with better error handling
-            const success = await vscode.workspace.applyEdit(edit);
-            
-            if (success) {
-                const config = vscode.workspace.getConfiguration('quicktick');
-                const showNotifications = config.get('showNotifications', true);
+            if (result.success && result.edit) {
+                // Apply the edit with better error handling
+                const success = await vscode.workspace.applyEdit(result.edit);
                 
-                if (showNotifications) {
-                    vscode.window.showInformationMessage(
-                        'QuickTick: Converted quotes to backticks',
-                        'OK'
-                    );
+                if (success) {
+                    const config = vscode.workspace.getConfiguration('quicktick');
+                    const showNotifications = config.get('showNotifications', true);
+                    
+                    if (showNotifications) {
+                        vscode.window.showInformationMessage(
+                            'QuickTick: Converted quotes to backticks',
+                            'OK'
+                        );
+                    }
+                } else {
+                    console.error('QuickTick: Failed to apply edit');
                 }
             } else {
-                console.error('QuickTick: Failed to apply edit');
+                console.error('QuickTick: Conversion failed:', result.error);
             }
         } catch (error) {
             console.error('QuickTick conversion error:', error);

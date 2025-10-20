@@ -1,43 +1,82 @@
-# QuickTick - Template Literal Converter
 
-A VS Code extension that automatically converts quotes to backticks when typing template literals in JavaScript, TypeScript, JSX, and TSX files.
+
+<div align="center">
+  <h1>QuickTick</h1>
+  <img src="https://img.shields.io/badge/VS%20Code-Extension-blue?style=for-the-badge&logo=visual-studio-code" alt="VS Code Extension" />
+  <img src="https://img.shields.io/badge/TypeScript-Ready-blue?style=for-the-badge&logo=typescript" alt="TypeScript Ready" />
+  <img src="https://img.shields.io/badge/JavaScript-Supported-yellow?style=for-the-badge&logo=javascript" alt="JavaScript Supported" />
+</div>
+
+<div align="center">
+  <h3>Automatically convert quotes to backticks when typing template literals</h3>
+  <p>A smart VS Code extension that enhances your JavaScript/TypeScript development workflow by automatically detecting and converting template literal syntax</p>
+</div>
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [How It Works](#how-it-works)
+- [Commands](#commands)
+- [Configuration](#configuration)
+- [Supported Languages](#supported-languages)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
-- **Real-time Conversion**: Automatically converts quotes to backticks when you type `${}` inside a quoted string
-- **Smart Detection**: Only converts when appropriate (skips strings with existing backticks)
-- **Context Awareness**: Avoids converting in comments, imports, regex patterns, and other invalid contexts
-- **Batch Conversion**: Convert existing template literals in current document or entire workspace
-- **Configurable**: Customize behavior through VS Code settings
+- **Real-time Conversion**: Instantly converts quotes to backticks when you type `${}` inside quoted strings
+- **Smart Detection**: Intelligently skips strings that already contain backticks or are in invalid contexts
+- **Context Aware**: Avoids conversion in comments, imports, regex patterns, and other inappropriate locations
+- **Batch Processing**: Convert existing template literals across your entire workspace
+- **Highly Configurable**: Customize behavior through VS Code settings
+- **Multi-language Support**: Works with JavaScript, TypeScript, JSX, and TSX files
+- **Non-intrusive**: Only activates when needed, preserving your existing workflow
 
 ## How It Works
 
-1. **Auto-Conversion**: When you type `${}` inside a quoted string, QuickTick automatically converts the quotes to backticks
-2. **Manual Conversion**: Use commands to scan and convert existing template literals
+QuickTick monitors your typing and automatically converts quotes to backticks when it detects template literal syntax. Here's how:
 
-### Examples
+### Auto-Conversion Example
 
-**Before (typing `${}` inside quotes):**
+**Type this:**
 ```javascript
 const message = "Hello ${name}";
 const greeting = 'Welcome ${user}!';
 ```
 
-**After (automatic conversion):**
+**QuickTick automatically converts to:**
 ```javascript
 const message = `Hello ${name}`;
 const greeting = `Welcome ${user}!`;
 ```
 
+### Smart Context Detection
+
+QuickTick intelligently avoids conversion in these scenarios:
+
+- **Comments**: `// const str = "Hello ${world}";`
+- **Import statements**: `import { foo } from "module";`
+- **Regex patterns**: `const regex = /pattern/;`
+- **Existing backticks**: `const str = "Hello `world`";`
+- **JSX attributes**: `<Component prop="value" />`
+
 ## Commands
 
-- `QuickTick: Convert Existing Template Literals` - Scan and convert template literals in the current document
-- `QuickTick: Convert Template Literals in Workspace` - Scan and convert template literals in all supported files
-- `QuickTick: Toggle Auto-Convert` - Enable/disable automatic conversion
+Access these commands via the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
+
+| Command | Description |
+|---------|-------------|
+| `QuickTick: Toggle Auto-Convert` | Enable/disable automatic conversion |
+| `QuickTick: Test Conversion` | Manually test conversion on current document |
 
 ## Configuration
 
-Configure QuickTick through VS Code settings:
+Configure QuickTick through VS Code settings (`Ctrl+,` / `Cmd+,`):
 
 ```json
 {
@@ -45,7 +84,7 @@ Configure QuickTick through VS Code settings:
   "quicktick.showNotifications": true,
   "quicktick.supportedLanguages": [
     "javascript",
-    "typescript", 
+    "typescript",
     "javascriptreact",
     "typescriptreact"
   ],
@@ -53,72 +92,139 @@ Configure QuickTick through VS Code settings:
 }
 ```
 
-### Settings
+### Settings Reference
 
-- `enableAutoConvert` - Enable/disable automatic conversion (default: `true`)
-- `showNotifications` - Show notifications when conversions are made (default: `true`)
-- `supportedLanguages` - File types to monitor for conversions (default: `["javascript", "typescript", "javascriptreact", "typescriptreact"]`)
-- `showWelcomeMessage` - Show welcome message when extension is activated (default: `true`)
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `enableAutoConvert` | `boolean` | `true` | Enable/disable automatic conversion |
+| `showNotifications` | `boolean` | `true` | Show notifications when conversions are made |
+| `supportedLanguages` | `string[]` | `["javascript", "typescript", "javascriptreact", "typescriptreact"]` | File types to monitor |
+| `showWelcomeMessage` | `boolean` | `true` | Show welcome message on first activation |
 
 ## Supported Languages
 
-- JavaScript (`.js`)
-- TypeScript (`.ts`)
-- JavaScript React (`.jsx`)
-- TypeScript React (`.tsx`)
-
-## Edge Cases Handled
-
-- **Existing Backticks**: Skips conversion if the string already contains backticks
-- **Comments**: Ignores strings in comments
-- **Import/Require Statements**: Never converts module paths
-- **Regex Patterns**: Avoids converting quoted patterns in regular expressions
-- **JSX Attributes**: Handles JSX string props correctly
-- **Multi-line Strings**: Supports multi-line quoted strings
-- **Escaped Characters**: Properly handles escaped quotes and characters
+- **JavaScript** (`.js`)
+- **TypeScript** (`.ts`)
+- **JavaScript React** (`.jsx`)
+- **TypeScript React** (`.tsx`)
 
 ## Installation
 
-1. Install the extension from the VS Code marketplace
-2. Open a JavaScript/TypeScript file
-3. Start typing template literals with quotes!
+### From VS Code Marketplace
+
+1. Open VS Code
+2. Go to Extensions (`Ctrl+Shift+X` / `Cmd+Shift+X`)
+3. Search for "QuickTick"
+4. Click Install
+
+### Manual Installation
+
+1. Download the `.vsix` file
+2. Open VS Code
+3. Go to Extensions → Install from VSIX
+4. Select the downloaded file
+
+## Quick Start
+
+1. **Install** QuickTick from the VS Code marketplace
+2. **Open** a JavaScript or TypeScript file
+3. **Type** a quoted string with template literal syntax: `"Hello ${name}"`
+4. **Watch** QuickTick automatically convert it to: `` `Hello ${name}` ``
+
+### Example Usage
+
+```javascript
+// Type this:
+const message = "Hello ${name}";
+const greeting = 'Welcome ${user}!';
+
+// QuickTick automatically converts to:
+const message = `Hello ${name}`;
+const greeting = `Welcome ${user}!`;
+```
 
 ## Development
 
 ### Prerequisites
 
-- Node.js
-- npm
-- VS Code
+- **Node.js** (v16 or higher)
+- **npm** (v8 or higher)
+- **VS Code** (v1.74 or higher)
 
-### Setup
+### Setup Development Environment
 
-1. Clone the repository
-2. Install dependencies:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/KartikLabhshetwar/quicktick.git
+   cd quicktick
+   ```
+
+2. **Install dependencies:**
    ```bash
    npm install
    ```
-3. Compile TypeScript:
+
+3. **Compile TypeScript:**
    ```bash
    npm run compile
    ```
-4. Press F5 to run the extension in a new Extension Development Host window
+
+4. **Run in development mode:**
+   - Press `F5` in VS Code
+   - A new Extension Development Host window will open
+   - Test your changes in this window
 
 ### Testing
 
-Run tests with:
+Run the test suite:
+
 ```bash
+# Run all tests
 npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run linting
+npm run lint
+```
+
+### Building
+
+Create a production build:
+
+```bash
+# Compile TypeScript
+npm run compile
+
+# Package extension
+npm run package
 ```
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
+We welcome contributions! Here's how you can help:
+
+### How to Contribute
+
+1. **Fork** the repository
+2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
+3. **Make** your changes
+4. **Add** tests for new functionality
+5. **Run** the test suite: `npm test`
+6. **Commit** your changes: `git commit -m 'Add amazing feature'`
+7. **Push** to the branch: `git push origin feature/amazing-feature`
+8. **Open** a Pull Request
+
+### Development Guidelines
+
+- Follow the existing code style
+- Add tests for new features
+- Update documentation as needed
+- Ensure all tests pass before submitting
+- Use clear commit messages
+- Keep pull requests focused and small
 
 ## License
 
-Apache 2.0 License - see [LICENSE](LICENSE) file for details
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
