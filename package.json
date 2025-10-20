@@ -4,6 +4,7 @@
   "description": "Automatically converts quotes to backticks when typing template literals",
   "version": "0.0.2",
   "publisher": "kartiklabhshetwar",
+  "icon": "assets/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/KartikLabhshetwar/quicktick.git"

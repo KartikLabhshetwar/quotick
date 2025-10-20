@@ -1,7 +1,0 @@
-# QuickTick Icon
-# This is a placeholder - replace with actual PNG icon (128x128 pixels)
-# You can create one using:
-# - Canva (canva.com)
-# - Figma (figma.com) 
-# - GIMP (free)
-# - Or any image editor
