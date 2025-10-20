@@ -20,22 +20,17 @@
     "onLanguage:javascriptreact",
     "onLanguage:typescriptreact"
   ],
-  "main": "./out/extension.js",
+  "main": "./out/src/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "quicktick.convertExisting",
-        "title": "Convert Existing Template Literals",
-        "category": "QuickTick"
-      },
-      {
-        "command": "quicktick.convertWorkspace",
-        "title": "Convert Template Literals in Workspace",
-        "category": "QuickTick"
-      },
-      {
         "command": "quicktick.toggleAutoConvert",
         "title": "Toggle Auto-Convert",
+        "category": "QuickTick"
+      },
+      {
+        "command": "quicktick.test",
+        "title": "Test Conversion",
         "category": "QuickTick"
       }
     ],

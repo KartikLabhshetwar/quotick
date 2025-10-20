@@ -12,62 +12,100 @@ export class TypingHandler {
     
     private setupDocumentChangeListener(): void {
         const disposable = vscode.workspace.onDidChangeTextDocument((event) => {
+            console.log('QuickTick: Document changed');
+            
             if (!this.isEnabled) {
+                console.log('QuickTick: Auto-convert disabled');
+                return;
+            }
+            
+            // Check if we're in a supported language
+            const document = event.document;
+            if (!this.isSupportedLanguage(document.languageId)) {
+                console.log('QuickTick: Unsupported language:', document.languageId);
                 return;
             }
             
             // Only process single character changes
             if (event.contentChanges.length !== 1) {
+                console.log('QuickTick: Multiple changes, skipping');
                 return;
             }
             
             const change = event.contentChanges[0];
+            console.log('QuickTick: Processing change:', change.text);
             
             // Only process when '}' is typed (completing ${})
             if (change.text !== '}') {
+                console.log('QuickTick: Not a closing brace, skipping');
                 return;
             }
             
             // Check if the change is preceded by '${'
-            const document = event.document;
             const position = change.range.start;
-            
-            // Look back 2 characters to see if we have '${'
+            // Look at more text to find the ${} pattern
             const beforeText = document.getText(new vscode.Range(
-                new vscode.Position(position.line, Math.max(0, position.character - 2)),
-                position
+                new vscode.Position(position.line, Math.max(0, position.character - 10)),
+                new vscode.Position(position.line, position.character)
             ));
             
-            if (!beforeText.endsWith('${')) {
+            console.log('QuickTick: Checking text before cursor:', beforeText);
+            
+            // Check if the text contains '${...}' pattern (template literal)
+            if (!/\$\{[^}]*\}/.test(beforeText)) {
+                console.log('QuickTick: No template literal pattern found, skipping');
                 return;
             }
             
-            // Check if we're in a supported language
-            if (!this.isSupportedLanguage(document.languageId)) {
-                return;
-            }
+            console.log('QuickTick: Found template literal pattern, checking quote range...');
             
-            // Find the quote range
-            const quoteRange = QuoteConverter.findQuoteRange(document, position);
-            if (!quoteRange) {
-                return;
-            }
-            
-            // Check if string contains backticks (skip if true)
-            if (QuoteConverter.hasBackticks(quoteRange.content)) {
-                return;
-            }
-            
-            // Check if in valid context
-            if (!QuoteConverter.isValidContext(document, quoteRange.start)) {
-                return;
-            }
-            
-            // Perform the conversion
-            this.convertQuotesToBackticks(document, quoteRange);
+            // Use a timeout to allow the document to settle
+            setTimeout(() => {
+                this.processDocumentForTemplateLiterals(document);
+            }, 50);
         });
         
         this.disposables.push(disposable);
+    }
+    
+    public async processDocumentForTemplateLiterals(document: vscode.TextDocument): Promise<void> {
+        try {
+            console.log('QuickTick: Processing document for template literals...');
+            
+            // Find all template literals in quotes
+            const templateLiterals = QuoteConverter.findAllTemplateLiterals(document);
+            console.log('QuickTick: Found', templateLiterals.length, 'template literals');
+            
+            // Find the most recent one (the one that was just typed)
+            let targetLiteral = null;
+            for (const templateLiteral of templateLiterals) {
+                console.log('QuickTick: Checking template literal:', templateLiteral.content);
+                
+                // Check if string contains backticks (skip if true)
+                if (QuoteConverter.hasBackticks(templateLiteral.content)) {
+                    console.log('QuickTick: Skipping - contains backticks');
+                    continue;
+                }
+                
+                // Check if in valid context
+                if (!QuoteConverter.isValidContext(document, templateLiteral.start)) {
+                    console.log('QuickTick: Skipping - invalid context');
+                    continue;
+                }
+                
+                // This is a valid candidate
+                targetLiteral = templateLiteral;
+            }
+            
+            if (targetLiteral) {
+                console.log('QuickTick: Converting quotes to backticks for:', targetLiteral.content);
+                await this.convertQuotesToBackticks(document, targetLiteral);
+            } else {
+                console.log('QuickTick: No valid template literal found to convert');
+            }
+        } catch (error) {
+            console.error('QuickTick: Error processing document:', error);
+        }
     }
     
     private setupConfigurationListener(): void {
@@ -100,6 +138,8 @@ export class TypingHandler {
     private async convertQuotesToBackticks(document: vscode.TextDocument, quoteRange: any): Promise<void> {
         try {
             const edit = QuoteConverter.convertToBacktick(document, quoteRange);
+            
+            // Apply the edit with better error handling
             const success = await vscode.workspace.applyEdit(edit);
             
             if (success) {
@@ -112,6 +152,8 @@ export class TypingHandler {
                         'OK'
                     );
                 }
+            } else {
+                console.error('QuickTick: Failed to apply edit');
             }
         } catch (error) {
             console.error('QuickTick conversion error:', error);

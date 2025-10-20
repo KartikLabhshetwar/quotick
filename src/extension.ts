@@ -1,32 +1,33 @@
 import * as vscode from 'vscode';
 import { TypingHandler } from './typingHandler';
-import { Scanner } from './scanner';
 
 let typingHandler: TypingHandler;
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('QuickTick extension is now active!');
     
-    // Initialize typing handler
+    // Initialize typing handler for auto-conversion
     typingHandler = new TypingHandler();
     
-    // Register commands
-    const convertExistingCommand = vscode.commands.registerCommand('quicktick.convertExisting', () => {
-        Scanner.scanCurrentDocument();
-    });
-    
-    const convertWorkspaceCommand = vscode.commands.registerCommand('quicktick.convertWorkspace', () => {
-        Scanner.scanWorkspace();
-    });
-    
+    // Register only the toggle command
     const toggleAutoConvertCommand = vscode.commands.registerCommand('quicktick.toggleAutoConvert', () => {
         typingHandler.toggleAutoConvert();
     });
     
+    // Add a test command to manually trigger conversion
+    const testCommand = vscode.commands.registerCommand('quicktick.test', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showWarningMessage('No active editor found');
+            return;
+        }
+        
+        typingHandler.processDocumentForTemplateLiterals(editor.document);
+    });
+    
     // Add commands to context
-    context.subscriptions.push(convertExistingCommand);
-    context.subscriptions.push(convertWorkspaceCommand);
     context.subscriptions.push(toggleAutoConvertCommand);
+    context.subscriptions.push(testCommand);
     context.subscriptions.push(typingHandler);
     
     // Show welcome message
@@ -35,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
     
     if (showWelcome) {
         vscode.window.showInformationMessage(
-            'QuickTick: Template Literal Converter activated! Type `${}` in quotes to auto-convert.',
+            'QuickTick: Auto-conversion enabled! Type `${}` in quotes to convert to backticks.',
             'Got it!'
         ).then(() => {
             config.update('showWelcomeMessage', false, vscode.ConfigurationTarget.Global);

@@ -200,19 +200,25 @@ export class Scanner {
             }
         }
         
-        const success = await vscode.workspace.applyEdit(edit);
-        
-        if (success) {
-            const config = vscode.workspace.getConfiguration('quicktick');
-            const showNotifications = config.get('showNotifications', true);
+        try {
+            const success = await vscode.workspace.applyEdit(edit);
             
-            if (showNotifications) {
-                vscode.window.showInformationMessage(
-                    `QuickTick: Successfully converted ${templateLiterals.length} template literal(s)`
-                );
+            if (success) {
+                const config = vscode.workspace.getConfiguration('quicktick');
+                const showNotifications = config.get('showNotifications', true);
+                
+                if (showNotifications) {
+                    vscode.window.showInformationMessage(
+                        `QuickTick: Successfully converted ${templateLiterals.length} template literal(s)`
+                    );
+                }
+            } else {
+                vscode.window.showErrorMessage('QuickTick: Failed to apply conversions');
             }
-        } else {
-            vscode.window.showErrorMessage('QuickTick: Failed to apply conversions');
+        } catch (error) {
+            console.error('QuickTick: Error applying conversions:', error);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            vscode.window.showErrorMessage(`QuickTick: Error - ${errorMessage}`);
         }
     }
 }
