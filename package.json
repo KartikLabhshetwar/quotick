@@ -2,7 +2,7 @@
   "name": "quotick",
   "displayName": "Quotick",
   "description": "Automatically converts quotes to backticks when typing template literals",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "kartiklabhshetwar",
   "icon": "assets/icon.png",
   "repository": {
@@ -59,7 +59,7 @@
       {
         "command": "quotick.toggleAutoConvert",
         "title": "Toggle Auto-Convert",
-        "category": "Template String Converter"
+        "category": "Quotick"
       },
       {
         "command": "quotick.test",
