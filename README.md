@@ -11,6 +11,9 @@
 
 ## What it does
 
+![clideo_editor_fa6cd16f8063436e9e4bbd8f40e9eb97](https://github.com/user-attachments/assets/d1ef48b9-1b6a-408c-9093-1a83fabedeaf)
+
+
 Type this:
 ```javascript
 const message = "Hello ${name}";
