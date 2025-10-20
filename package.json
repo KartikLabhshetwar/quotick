@@ -2,7 +2,7 @@
   "name": "quotick",
   "displayName": "Quotick",
   "description": "Automatically converts quotes to backticks when typing template literals and reverts back when template syntax is removed",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "kartiklabhshetwar",
   "icon": "assets/icon.png",
   "repository": {

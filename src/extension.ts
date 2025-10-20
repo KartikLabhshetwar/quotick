@@ -61,8 +61,9 @@ async function toggleAutoConvert(): Promise<void> {
 }
 
 async function toggleRevertFeature(): Promise<void> {
-    const config = ConfigurationManager.getConfiguration();
-    const newEnabled = !config.autoRemoveTemplateString;
+    const config = vscode.workspace.getConfiguration('quotick');
+    const currentEnabled = config.get<boolean>('autoRemoveTemplateString', true);
+    const newEnabled = !currentEnabled;
     
     await ConfigurationManager.updateConfiguration('autoRemoveTemplateString', newEnabled);
     
