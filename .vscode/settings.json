@@ -1,3 +1,4 @@
 {
-    "quotick.autoRemoveTemplateString": true
+    "quotick.autoRemoveTemplateString": true,
+    "quotick.enableAutoConvert": true
 }

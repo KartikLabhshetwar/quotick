@@ -2,7 +2,7 @@
   "name": "quotick",
   "displayName": "Quotick",
   "description": "Automatically converts quotes to backticks when typing template literals and reverts back when template syntax is removed",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "publisher": "kartiklabhshetwar",
   "icon": "assets/icon.png",
   "repository": {
@@ -75,6 +75,16 @@
       {
         "command": "quotick.toggleRevertFeature",
         "title": "Toggle Revert Feature",
+        "category": "Quotick"
+      },
+      {
+        "command": "quotick.enableExtension",
+        "title": "Enable Quotick",
+        "category": "Quotick"
+      },
+      {
+        "command": "quotick.disableExtension",
+        "title": "Disable Quotick",
         "category": "Quotick"
       }
     ],

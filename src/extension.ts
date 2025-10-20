@@ -32,10 +32,20 @@ export function activate(context: vscode.ExtensionContext) {
         toggleRevertFeature();
     });
     
+    // Add explicit enable/disable extension commands
+    const enableExtensionCommand = vscode.commands.registerCommand('quotick.enableExtension', () => {
+        setExtensionEnabled(true);
+    });
+    const disableExtensionCommand = vscode.commands.registerCommand('quotick.disableExtension', () => {
+        setExtensionEnabled(false);
+    });
+    
     // Add commands to context
     context.subscriptions.push(toggleAutoConvertCommand);
     context.subscriptions.push(testCommand);
     context.subscriptions.push(toggleRevertCommand);
+    context.subscriptions.push(enableExtensionCommand);
+    context.subscriptions.push(disableExtensionCommand);
     context.subscriptions.push(documentChangeHandler);
     
     // Show welcome message
@@ -69,6 +79,14 @@ async function toggleRevertFeature(): Promise<void> {
     
     vscode.window.showInformationMessage(
         `Quotick revert feature ${newEnabled ? 'enabled' : 'disabled'}`,
+        'OK'
+    );
+}
+
+async function setExtensionEnabled(enabled: boolean): Promise<void> {
+    await ConfigurationManager.updateConfiguration('enableAutoConvert', enabled);
+    vscode.window.showInformationMessage(
+        `Quotick ${enabled ? 'enabled' : 'disabled'}`,
         'OK'
     );
 }
