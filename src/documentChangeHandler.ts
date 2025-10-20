@@ -95,6 +95,12 @@ export class DocumentChangeHandler {
       if (QuoteDetector.notInComment(lineText, currentChar, startQuoteIndex, endQuoteIndex) &&
           QuoteDetector.quotesMatch(lineText, startQuoteIndex, endQuoteIndex)) {
         
+        // Handle template literal reversion when $ or { is removed
+        if (this.previousDocument && await this.handleTemplateLiteralReversion(
+          document, lineNumber, currentChar, changes, configuration)) {
+          return;
+        }
+        
         await this.handleQuoteConversion(
           document,
           lineText,
@@ -350,6 +356,136 @@ export class DocumentChangeHandler {
     }
   }
   
+  /**
+   * Handle reversion of template literals back to quotes when $ or { characters are removed
+   */
+  private async handleTemplateLiteralReversion(
+    document: vscode.TextDocument,
+    lineNumber: number,
+    currentChar: number,
+    changes: vscode.TextDocumentContentChangeEvent,
+    configuration: any
+  ): Promise<boolean> {
+    // Only handle deletions (empty change text)
+    if (changes.text !== '') {
+      return false;
+    }
+
+    const currentLine = document.lineAt(lineNumber).text;
+    const previousLine = this.previousDocument!.lines[lineNumber].text;
+    
+    // Check if we're dealing with backticks
+    if (!currentLine.includes('`')) {
+      return false;
+    }
+
+    // Find backtick positions in current line
+    const backtickStart = currentLine.indexOf('`');
+    const backtickEnd = currentLine.lastIndexOf('`');
+    
+    if (backtickStart === -1 || backtickEnd === -1 || backtickStart === backtickEnd) {
+      return false;
+    }
+
+    // Check if the previous line had template literal syntax (${...})
+    const previousContent = previousLine.substring(backtickStart + 1, backtickEnd);
+    const currentContent = currentLine.substring(backtickStart + 1, backtickEnd);
+    
+    // Check if template literal syntax was removed
+    const hadTemplateSyntax = /\$\{[^}]*\}/.test(previousContent);
+    const hasTemplateSyntax = /\$\{[^}]*\}/.test(currentContent);
+    
+    // If template syntax was removed, revert to quotes
+    if (hadTemplateSyntax && !hasTemplateSyntax) {
+      const quoteType = configuration.quoteType === 'single' ? '\'' : '"';
+      const result = QuoteConverter.convertBackticksToQuotes(
+        document,
+        {
+          start: new vscode.Position(lineNumber, backtickStart),
+          end: new vscode.Position(lineNumber, backtickEnd),
+          quoteType: quoteType as '"' | "'" | '`',
+          content: currentContent,
+          lineNumber: lineNumber
+        },
+        quoteType as '"' | "'"
+      );
+      
+      if (result.success) {
+        await QuoteConverter.applyConversion(result);
+        
+        // Update cursor position
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+          editor.selection = new vscode.Selection(
+            new vscode.Position(lineNumber, currentChar),
+            new vscode.Position(lineNumber, currentChar)
+          );
+        }
+        
+        return true;
+      }
+    }
+
+    // Additional check: if $ or { was specifically removed
+    const removedChar = this.getRemovedCharacter(previousLine, currentLine, currentChar);
+    if (removedChar === '$' || removedChar === '{') {
+      // Check if this removal broke the template literal syntax
+      const remainingContent = currentLine.substring(backtickStart + 1, backtickEnd);
+      const hasValidTemplateSyntax = /\$\{[^}]*\}/.test(remainingContent);
+      
+      if (!hasValidTemplateSyntax) {
+        const quoteType = configuration.quoteType === 'single' ? '\'' : '"';
+        const result = QuoteConverter.convertBackticksToQuotes(
+          document,
+          {
+            start: new vscode.Position(lineNumber, backtickStart),
+            end: new vscode.Position(lineNumber, backtickEnd),
+            quoteType: quoteType as '"' | "'" | '`',
+            content: remainingContent,
+            lineNumber: lineNumber
+          },
+          quoteType as '"' | "'"
+        );
+        
+        if (result.success) {
+          await QuoteConverter.applyConversion(result);
+          
+          // Update cursor position
+          const editor = vscode.window.activeTextEditor;
+          if (editor) {
+            editor.selection = new vscode.Selection(
+              new vscode.Position(lineNumber, currentChar),
+              new vscode.Position(lineNumber, currentChar)
+            );
+          }
+          
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Helper function to determine what character was removed
+   */
+  private getRemovedCharacter(previousLine: string, currentLine: string, currentChar: number): string | null {
+    // Simple heuristic: compare lengths and check around cursor position
+    if (previousLine.length > currentLine.length) {
+      // Character was removed
+      const beforeCursor = previousLine.substring(0, currentChar);
+      const afterCursor = previousLine.substring(currentChar + 1);
+      const reconstructed = beforeCursor + afterCursor;
+      
+      if (reconstructed === currentLine) {
+        return previousLine.charAt(currentChar);
+      }
+    }
+    
+    return null;
+  }
+
   private updatePreviousDocument(document: vscode.TextDocument): void {
     this.previousDocument = { lines: [], lineCount: document.lineCount };
     for (let i = 0; i < document.lineCount; i++) {

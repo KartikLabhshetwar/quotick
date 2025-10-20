@@ -6,7 +6,7 @@
 </div>
 
 <div align="center">
-  <h3>A VS Code extension that automatically converts quotes to backticks when typing template literals</h3>
+  <h3>A VS Code extension that automatically converts quotes to backticks when typing template literals and reverts back when template syntax is removed</h3>
 </div>
 
 ## What it does
@@ -26,15 +26,25 @@ const message = `Hello ${name}`;
 const greeting = `Welcome ${user}!`;
 ```
 
+**Smart Revert Feature** - When you remove `$` or `{` from template literals, Quotick automatically reverts back to quotes:
+
+```javascript
+// Start with: `Hello ${name}`
+// Delete $: `Hello {name}` → automatically becomes "Hello {name}"
+// Delete {: `Hello $name}` → automatically becomes "Hello $name}"
+```
+
 ## Features
 
 | Feature | Description |
 |---------|-------------|
 | **Auto-conversion** | Converts quotes to backticks when typing `${}` |
+| **Smart Revert** | Automatically reverts backticks to quotes when `$` or `{` is removed |
 | **Smart detection** | Only converts strings with template literal syntax |
 | **Context aware** | Skips comments, imports, and invalid contexts |
 | **Multi-language** | Works with JS, TS, JSX, TSX files |
 | **Real-time** | Converts as you type |
+| **Bidirectional** | Works both ways - quotes ↔ backticks |
 | **Configurable** | Enable/disable and customize behavior |
 
 ## Installation
@@ -55,6 +65,7 @@ const greeting = `Welcome ${user}!`;
 
 - `Quotick: Toggle Auto-Convert` - Enable/disable automatic conversion
 - `Quotick: Test Conversion` - Manually test conversion on current document
+- `Quotick: Toggle Revert Feature` - Enable/disable smart revert functionality
 
 ## Configuration
 
@@ -62,6 +73,7 @@ const greeting = `Welcome ${user}!`;
 {
   "quotick.enableAutoConvert": true,
   "quotick.showNotifications": true,
+  "quotick.autoRemoveTemplateString": true,
   "quotick.supportedLanguages": [
     "javascript",
     "typescript",

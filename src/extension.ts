@@ -27,9 +27,15 @@ export function activate(context: vscode.ExtensionContext) {
         processDocumentForTemplateLiterals(editor.document);
     });
     
+    // Add toggle revert feature command
+    const toggleRevertCommand = vscode.commands.registerCommand('quotick.toggleRevertFeature', () => {
+        toggleRevertFeature();
+    });
+    
     // Add commands to context
     context.subscriptions.push(toggleAutoConvertCommand);
     context.subscriptions.push(testCommand);
+    context.subscriptions.push(toggleRevertCommand);
     context.subscriptions.push(documentChangeHandler);
     
     // Show welcome message
@@ -50,6 +56,18 @@ async function toggleAutoConvert(): Promise<void> {
     
     vscode.window.showInformationMessage(
         `Quotick auto-convert ${newEnabled ? 'enabled' : 'disabled'}`,
+        'OK'
+    );
+}
+
+async function toggleRevertFeature(): Promise<void> {
+    const config = ConfigurationManager.getConfiguration();
+    const newEnabled = !config.autoRemoveTemplateString;
+    
+    await ConfigurationManager.updateConfiguration('autoRemoveTemplateString', newEnabled);
+    
+    vscode.window.showInformationMessage(
+        `Quotick revert feature ${newEnabled ? 'enabled' : 'disabled'}`,
         'OK'
     );
 }
@@ -118,7 +136,7 @@ function showWelcomeMessage(): void {
     
     if (showWelcome) {
         vscode.window.showInformationMessage(
-            'Quotick: Auto-conversion enabled! Type `${}` in quotes to convert to backticks.',
+            'Quotick: Auto-conversion enabled! Type `${}` in quotes to convert to backticks. Delete `$` or `{` to revert back to quotes.',
             'Got it!'
         ).then(() => {
             config.update('showWelcomeMessage', false, vscode.ConfigurationTarget.Global);
