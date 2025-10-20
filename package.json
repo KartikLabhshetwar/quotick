@@ -1,6 +1,6 @@
 {
   "name": "quicktick",
-  "displayName": "QuickTick (Template Literal Converter)",
+  "displayName": "QuickTick",
   "description": "Automatically converts quotes to backticks when typing template literals",
   "version": "0.0.1",
   "publisher": "kartiklabhshetwar",
@@ -21,6 +21,14 @@
     "onLanguage:typescriptreact"
   ],
   "main": "./out/src/extension.js",
+  "tags": [
+    "template literal",
+    "converter",
+    "quotes",
+    "backticks",
+    "javascript",
+    "typescript"
+  ],
   "contributes": {
     "commands": [
       {
