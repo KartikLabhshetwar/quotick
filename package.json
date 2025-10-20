@@ -1,18 +1,18 @@
 {
-  "name": "quicktick",
-  "displayName": "QuickTick",
+  "name": "quotick",
+  "displayName": "Quotick",
   "description": "Automatically converts quotes to backticks when typing template literals",
   "version": "0.0.2",
   "publisher": "kartiklabhshetwar",
   "icon": "assets/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/KartikLabhshetwar/quicktick.git"
+    "url": "https://github.com/KartikLabhshetwar/quotick.git"
   },
   "bugs": {
-    "url": "https://github.com/KartikLabhshetwar/quicktick/issues"
+    "url": "https://github.com/KartikLabhshetwar/quotick/issues"
   },
-  "homepage": "https://github.com/KartikLabhshetwar/quicktick#readme",
+  "homepage": "https://github.com/KartikLabhshetwar/quotick#readme",
   "keywords": [
     "template literal",
     "converter",
@@ -57,35 +57,35 @@
   "contributes": {
     "commands": [
       {
-        "command": "quicktick.toggleAutoConvert",
+        "command": "quotick.toggleAutoConvert",
         "title": "Toggle Auto-Convert",
         "category": "Template String Converter"
       },
       {
-        "command": "quicktick.test",
+        "command": "quotick.test",
         "title": "Test Conversion",
-        "category": "QuickTick"
+        "category": "Quotick"
       }
     ],
     "configuration": {
-      "title": "QuickTick",
+      "title": "Quotick",
       "properties": {
-        "quicktick.enableAutoConvert": {
+        "quotick.enableAutoConvert": {
           "type": "boolean",
           "default": true,
           "description": "Enable automatic conversion when typing template literals"
         },
-        "quicktick.showNotifications": {
+        "quotick.showNotifications": {
           "type": "boolean",
           "default": true,
           "description": "Show notifications when conversions are made"
         },
-        "quicktick.supportedLanguages": {
+        "quotick.supportedLanguages": {
           "type": "array",
           "default": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
           "description": "File types to monitor for conversions"
         },
-        "quicktick.showWelcomeMessage": {
+        "quotick.showWelcomeMessage": {
           "type": "boolean",
           "default": true,
           "description": "Show welcome message when extension is activated"

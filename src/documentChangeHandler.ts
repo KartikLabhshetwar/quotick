@@ -41,9 +41,9 @@ export class DocumentChangeHandler {
   
   private setupConfigurationListener(): void {
     const disposable = ConfigurationManager.onConfigurationChange((e) => {
-      if (e.affectsConfiguration('quicktick')) {
+      if (e.affectsConfiguration('quotick')) {
         // Configuration changed, could trigger re-evaluation if needed
-        console.log('QuickTick configuration changed');
+        console.log('Quotick configuration changed');
       }
     });
     

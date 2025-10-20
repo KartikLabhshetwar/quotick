@@ -1,7 +1,7 @@
 
 
 <div align="center">
-  <h1>QuickTick</h1>
+  <h1>Quotick</h1>
   <img src="https://img.shields.io/badge/VS%20Code-Extension-blue?style=for-the-badge&logo=visual-studio-code" alt="VS Code Extension" />
   <img src="https://img.shields.io/badge/TypeScript-Ready-blue?style=for-the-badge&logo=typescript" alt="TypeScript Ready" />
   <img src="https://img.shields.io/badge/JavaScript-Supported-yellow?style=for-the-badge&logo=javascript" alt="JavaScript Supported" />
@@ -39,7 +39,7 @@
 
 ## How It Works
 
-QuickTick monitors your typing and automatically converts quotes to backticks when it detects template literal syntax. Here's how:
+Quotick monitors your typing and automatically converts quotes to backticks when it detects template literal syntax. Here's how:
 
 ### Auto-Conversion Example
 
@@ -49,7 +49,7 @@ const message = "Hello ${name}";
 const greeting = 'Welcome ${user}!';
 ```
 
-**QuickTick automatically converts to:**
+**Quotick automatically converts to:**
 ```javascript
 const message = `Hello ${name}`;
 const greeting = `Welcome ${user}!`;
@@ -57,7 +57,7 @@ const greeting = `Welcome ${user}!`;
 
 ### Smart Context Detection
 
-QuickTick intelligently avoids conversion in these scenarios:
+Quotick intelligently avoids conversion in these scenarios:
 
 - **Comments**: `// const str = "Hello ${world}";`
 - **Import statements**: `import { foo } from "module";`
@@ -71,24 +71,24 @@ Access these commands via the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
 
 | Command | Description |
 |---------|-------------|
-| `QuickTick: Toggle Auto-Convert` | Enable/disable automatic conversion |
-| `QuickTick: Test Conversion` | Manually test conversion on current document |
+| `Quotick: Toggle Auto-Convert` | Enable/disable automatic conversion |
+| `Quotick: Test Conversion` | Manually test conversion on current document |
 
 ## Configuration
 
-Configure QuickTick through VS Code settings (`Ctrl+,` / `Cmd+,`):
+Configure Quotick through VS Code settings (`Ctrl+,` / `Cmd+,`):
 
 ```json
 {
-  "quicktick.enableAutoConvert": true,
-  "quicktick.showNotifications": true,
-  "quicktick.supportedLanguages": [
+  "quotick.enableAutoConvert": true,
+  "quotick.showNotifications": true,
+  "quotick.supportedLanguages": [
     "javascript",
     "typescript",
     "javascriptreact",
     "typescriptreact"
   ],
-  "quicktick.showWelcomeMessage": true
+  "quotick.showWelcomeMessage": true
 }
 ```
 
@@ -114,7 +114,7 @@ Configure QuickTick through VS Code settings (`Ctrl+,` / `Cmd+,`):
 
 1. Open VS Code
 2. Go to Extensions (`Ctrl+Shift+X` / `Cmd+Shift+X`)
-3. Search for "QuickTick"
+3. Search for "Quotick"
 4. Click Install
 
 ### Manual Installation
@@ -126,10 +126,10 @@ Configure QuickTick through VS Code settings (`Ctrl+,` / `Cmd+,`):
 
 ## Quick Start
 
-1. **Install** QuickTick from the VS Code marketplace
+1. **Install** Quotick from the VS Code marketplace
 2. **Open** a JavaScript or TypeScript file
 3. **Type** a quoted string with template literal syntax: `"Hello ${name}"`
-4. **Watch** QuickTick automatically convert it to: `` `Hello ${name}` ``
+4. **Watch** Quotick automatically convert it to: `` `Hello ${name}` ``
 
 ### Example Usage
 
@@ -138,7 +138,7 @@ Configure QuickTick through VS Code settings (`Ctrl+,` / `Cmd+,`):
 const message = "Hello ${name}";
 const greeting = 'Welcome ${user}!';
 
-// QuickTick automatically converts to:
+// Quotick automatically converts to:
 const message = `Hello ${name}`;
 const greeting = `Welcome ${user}!`;
 ```
@@ -155,8 +155,8 @@ const greeting = `Welcome ${user}!`;
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/KartikLabhshetwar/quicktick.git
-   cd quicktick
+   git clone https://github.com/KartikLabhshetwar/quotick.git
+   cd quotick
    ```
 
 2. **Install dependencies:**

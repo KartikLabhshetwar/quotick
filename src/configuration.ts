@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { ExtensionConfiguration } from "./types";
 
 export class ConfigurationManager {
-  private static readonly CONFIG_SECTION = "quicktick";
+  private static readonly CONFIG_SECTION = "quotick";
   
   /**
    * Get the current configuration

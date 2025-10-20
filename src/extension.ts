@@ -6,18 +6,18 @@ import { QuoteConverter } from './converter';
 let documentChangeHandler: DocumentChangeHandler;
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('QuickTick extension is now active!');
+    console.log('Quotick extension is now active!');
     
     // Initialize document change handler for auto-conversion
     documentChangeHandler = new DocumentChangeHandler();
     
     // Register toggle command
-    const toggleAutoConvertCommand = vscode.commands.registerCommand('quicktick.toggleAutoConvert', () => {
+    const toggleAutoConvertCommand = vscode.commands.registerCommand('quotick.toggleAutoConvert', () => {
         toggleAutoConvert();
     });
     
     // Add a test command to manually trigger conversion
-    const testCommand = vscode.commands.registerCommand('quicktick.test', () => {
+    const testCommand = vscode.commands.registerCommand('quotick.test', () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             vscode.window.showWarningMessage('No active editor found');
@@ -49,7 +49,7 @@ async function toggleAutoConvert(): Promise<void> {
     await ConfigurationManager.updateConfiguration('enableAutoConvert', newEnabled);
     
     vscode.window.showInformationMessage(
-        `QuickTick auto-convert ${newEnabled ? 'enabled' : 'disabled'}`,
+        `Quotick auto-convert ${newEnabled ? 'enabled' : 'disabled'}`,
         'OK'
     );
 }
@@ -113,12 +113,12 @@ async function processDocumentForTemplateLiterals(document: vscode.TextDocument)
 }
 
 function showWelcomeMessage(): void {
-    const config = vscode.workspace.getConfiguration('quicktick');
+    const config = vscode.workspace.getConfiguration('quotick');
     const showWelcome = config.get('showWelcomeMessage', true);
     
     if (showWelcome) {
         vscode.window.showInformationMessage(
-            'QuickTick: Auto-conversion enabled! Type `${}` in quotes to convert to backticks.',
+            'Quotick: Auto-conversion enabled! Type `${}` in quotes to convert to backticks.',
             'Got it!'
         ).then(() => {
             config.update('showWelcomeMessage', false, vscode.ConfigurationTarget.Global);

@@ -17,7 +17,7 @@ export class Scanner {
         // Check if we're in a supported language
         if (!this.isSupportedLanguage(document.languageId)) {
             vscode.window.showWarningMessage(
-                `QuickTick: ${document.languageId} is not supported. Supported languages: JavaScript, TypeScript, JSX, TSX`
+                `Quotick: ${document.languageId} is not supported. Supported languages: JavaScript, TypeScript, JSX, TSX`
             );
             return;
         }
@@ -26,13 +26,13 @@ export class Scanner {
             const templateLiterals = QuoteConverter.findAllTemplateLiterals(document);
             
             if (templateLiterals.length === 0) {
-                vscode.window.showInformationMessage('QuickTick: No template literals found to convert');
+                vscode.window.showInformationMessage('Quotick: No template literals found to convert');
                 return;
             }
             
             // Show confirmation dialog
             const action = await vscode.window.showInformationMessage(
-                `QuickTick: Found ${templateLiterals.length} template literal(s) to convert. Proceed?`,
+                `Quotick: Found ${templateLiterals.length} template literal(s) to convert. Proceed?`,
                 'Convert All',
                 'Preview',
                 'Cancel'
@@ -52,7 +52,7 @@ export class Scanner {
             
         } catch (error) {
             console.error('QuickTick scan error:', error);
-            vscode.window.showErrorMessage('QuickTick: Error scanning document');
+            vscode.window.showErrorMessage('Quotick: Error scanning document');
         }
     }
     
@@ -68,7 +68,7 @@ export class Scanner {
         );
         
         if (files.length === 0) {
-            vscode.window.showInformationMessage('QuickTick: No supported files found in workspace');
+            vscode.window.showInformationMessage('Quotick: No supported files found in workspace');
             return;
         }
         
@@ -91,7 +91,7 @@ export class Scanner {
         }
         
         if (totalConversions === 0) {
-            vscode.window.showInformationMessage('QuickTick: No template literals found in workspace');
+            vscode.window.showInformationMessage('Quotick: No template literals found in workspace');
             return;
         }
         
@@ -101,7 +101,7 @@ export class Scanner {
             .join('\n');
         
         const action = await vscode.window.showInformationMessage(
-            `QuickTick: Found ${totalConversions} template literal(s) in ${fileResults.length} file(s):\n\n${fileList}\n\nProceed with conversion?`,
+            `Quotick: Found ${totalConversions} template literal(s) in ${fileResults.length} file(s):\n\n${fileList}\n\nProceed with conversion?`,
             'Convert All',
             'Cancel'
         );
@@ -122,7 +122,7 @@ export class Scanner {
         }
         
         vscode.window.showInformationMessage(
-            `QuickTick: Successfully converted ${totalConversions} template literal(s)`
+            `Quotick: Successfully converted ${totalConversions} template literal(s)`
         );
     }
     
@@ -167,7 +167,7 @@ export class Scanner {
         await vscode.window.showTextDocument(diffDoc, { viewColumn: vscode.ViewColumn.Beside });
         
         vscode.window.showInformationMessage(
-            `QuickTick: Preview showing ${templateLiterals.length} conversion(s). Apply changes?`,
+            `Quotick: Preview showing ${templateLiterals.length} conversion(s). Apply changes?`,
             'Apply',
             'Cancel'
         ).then(action => {
@@ -199,21 +199,21 @@ export class Scanner {
             const success = await vscode.workspace.applyEdit(edit);
             
             if (success) {
-                const config = vscode.workspace.getConfiguration('quicktick');
+                const config = vscode.workspace.getConfiguration('quotick');
                 const showNotifications = config.get('showNotifications', true);
                 
                 if (showNotifications) {
                     vscode.window.showInformationMessage(
-                        `QuickTick: Successfully converted ${templateLiterals.length} template literal(s)`
+                        `Quotick: Successfully converted ${templateLiterals.length} template literal(s)`
                     );
                 }
             } else {
-                vscode.window.showErrorMessage('QuickTick: Failed to apply conversions');
+                vscode.window.showErrorMessage('Quotick: Failed to apply conversions');
             }
         } catch (error) {
-            console.error('QuickTick: Error applying conversions:', error);
+            console.error('Quotick: Error applying conversions:', error);
             const errorMessage = error instanceof Error ? error.message : String(error);
-            vscode.window.showErrorMessage(`QuickTick: Error - ${errorMessage}`);
+            vscode.window.showErrorMessage(`Quotick: Error - ${errorMessage}`);
         }
     }
 }

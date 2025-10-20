@@ -13,32 +13,32 @@ export class TypingHandler {
     
     private setupDocumentChangeListener(): void {
         const disposable = vscode.workspace.onDidChangeTextDocument((event) => {
-            console.log('QuickTick: Document changed');
+            console.log('Quotick: Document changed');
             
             if (!this.isEnabled) {
-                console.log('QuickTick: Auto-convert disabled');
+                console.log('Quotick: Auto-convert disabled');
                 return;
             }
             
             // Check if we're in a supported language
             const document = event.document;
             if (!this.isSupportedLanguage(document.languageId)) {
-                console.log('QuickTick: Unsupported language:', document.languageId);
+                console.log('Quotick: Unsupported language:', document.languageId);
                 return;
             }
             
             // Only process single character changes
             if (event.contentChanges.length !== 1) {
-                console.log('QuickTick: Multiple changes, skipping');
+                console.log('Quotick: Multiple changes, skipping');
                 return;
             }
             
             const change = event.contentChanges[0];
-            console.log('QuickTick: Processing change:', change.text);
+            console.log('Quotick: Processing change:', change.text);
             
             // Only process when '}' is typed (completing ${})
             if (change.text !== '}') {
-                console.log('QuickTick: Not a closing brace, skipping');
+                console.log('Quotick: Not a closing brace, skipping');
                 return;
             }
             
@@ -50,15 +50,15 @@ export class TypingHandler {
                 new vscode.Position(position.line, position.character)
             ));
             
-            console.log('QuickTick: Checking text before cursor:', beforeText);
+            console.log('Quotick: Checking text before cursor:', beforeText);
             
             // Check if the text contains '${...}' pattern (template literal)
             if (!/\$\{[^}]*\}/.test(beforeText)) {
-                console.log('QuickTick: No template literal pattern found, skipping');
+                console.log('Quotick: No template literal pattern found, skipping');
                 return;
             }
             
-            console.log('QuickTick: Found template literal pattern, checking quote range...');
+            console.log('Quotick: Found template literal pattern, checking quote range...');
             
             // Use a timeout to allow the document to settle
             setTimeout(() => {
@@ -71,26 +71,26 @@ export class TypingHandler {
     
     public async processDocumentForTemplateLiterals(document: vscode.TextDocument): Promise<void> {
         try {
-            console.log('QuickTick: Processing document for template literals...');
+            console.log('Quotick: Processing document for template literals...');
             
             // Find all template literals in quotes
             const templateLiterals = QuoteConverter.findAllTemplateLiterals(document);
-            console.log('QuickTick: Found', templateLiterals.length, 'template literals');
+            console.log('Quotick: Found', templateLiterals.length, 'template literals');
             
             // Find the most recent one (the one that was just typed)
             let targetLiteral = null;
             for (const templateLiteral of templateLiterals) {
-                console.log('QuickTick: Checking template literal:', templateLiteral.content);
+                console.log('Quotick: Checking template literal:', templateLiteral.content);
                 
                 // Check if string contains backticks (skip if true)
                 if (TemplateLiteralDetector.hasBackticks(templateLiteral.content)) {
-                    console.log('QuickTick: Skipping - contains backticks');
+                    console.log('Quotick: Skipping - contains backticks');
                     continue;
                 }
                 
                 // Check if in valid context
                 if (!TemplateLiteralDetector.isValidContext(document, templateLiteral.start)) {
-                    console.log('QuickTick: Skipping - invalid context');
+                    console.log('Quotick: Skipping - invalid context');
                     continue;
                 }
                 
@@ -99,20 +99,20 @@ export class TypingHandler {
             }
             
             if (targetLiteral) {
-                console.log('QuickTick: Converting quotes to backticks for:', targetLiteral.content);
+                console.log('Quotick: Converting quotes to backticks for:', targetLiteral.content);
                 await this.convertQuotesToBackticks(document, targetLiteral);
             } else {
-                console.log('QuickTick: No valid template literal found to convert');
+                console.log('Quotick: No valid template literal found to convert');
             }
         } catch (error) {
-            console.error('QuickTick: Error processing document:', error);
+            console.error('Quotick: Error processing document:', error);
         }
     }
     
     private setupConfigurationListener(): void {
         const disposable = vscode.workspace.onDidChangeConfiguration((event) => {
             if (event.affectsConfiguration('quicktick.enableAutoConvert')) {
-                const config = vscode.workspace.getConfiguration('quicktick');
+                const config = vscode.workspace.getConfiguration('quotick');
                 this.isEnabled = config.get('enableAutoConvert', true);
             }
         });
@@ -120,12 +120,12 @@ export class TypingHandler {
         this.disposables.push(disposable);
         
         // Initialize from current configuration
-        const config = vscode.workspace.getConfiguration('quicktick');
+        const config = vscode.workspace.getConfiguration('quotick');
         this.isEnabled = config.get('enableAutoConvert', true);
     }
     
     private isSupportedLanguage(languageId: string): boolean {
-        const config = vscode.workspace.getConfiguration('quicktick');
+        const config = vscode.workspace.getConfiguration('quotick');
         const supportedLanguages = config.get<string[]>('supportedLanguages', [
             'javascript',
             'typescript',
@@ -145,20 +145,20 @@ export class TypingHandler {
                 const success = await vscode.workspace.applyEdit(result.edit);
                 
                 if (success) {
-                    const config = vscode.workspace.getConfiguration('quicktick');
+                    const config = vscode.workspace.getConfiguration('quotick');
                     const showNotifications = config.get('showNotifications', true);
                     
                     if (showNotifications) {
                         vscode.window.showInformationMessage(
-                            'QuickTick: Converted quotes to backticks',
+                            'Quotick: Converted quotes to backticks',
                             'OK'
                         );
                     }
                 } else {
-                    console.error('QuickTick: Failed to apply edit');
+                    console.error('Quotick: Failed to apply edit');
                 }
             } else {
-                console.error('QuickTick: Conversion failed:', result.error);
+                console.error('Quotick: Conversion failed:', result.error);
             }
         } catch (error) {
             console.error('QuickTick conversion error:', error);
@@ -167,7 +167,7 @@ export class TypingHandler {
     
     public toggleAutoConvert(): void {
         this.isEnabled = !this.isEnabled;
-        const config = vscode.workspace.getConfiguration('quicktick');
+        const config = vscode.workspace.getConfiguration('quotick');
         config.update('enableAutoConvert', this.isEnabled, vscode.ConfigurationTarget.Global);
         
         vscode.window.showInformationMessage(
