@@ -8,24 +8,11 @@
     "type": "git",
     "url": "https://github.com/KartikLabhshetwar/quicktick.git"
   },
-  "engines": {
-    "vscode": "^1.74.0"
+  "bugs": {
+    "url": "https://github.com/KartikLabhshetwar/quicktick/issues"
   },
-  "categories": [
-    "Programming Languages",
-    "Formatters",
-    "Other",
-    "JavaScript",
-    "TypeScript"
-  ],
-  "activationEvents": [
-    "onLanguage:javascript",
-    "onLanguage:typescript",
-    "onLanguage:javascriptreact",
-    "onLanguage:typescriptreact"
-  ],
-  "main": "./out/src/extension.js",
-  "tags": [
+  "homepage": "https://github.com/KartikLabhshetwar/quicktick#readme",
+  "keywords": [
     "template literal",
     "converter",
     "quotes",
@@ -37,6 +24,21 @@
     "string",
     "string template"
   ],
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescriptreact"
+  ],
+  "main": "./out/src/extension.js",
   "contributes": {
     "commands": [
       {
