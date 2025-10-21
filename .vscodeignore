@@ -13,3 +13,4 @@ vsc-extension-quickstart.md
 .env
 .env.local
 .env.*.local
+web/**

@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import { HeroHeading } from './HeroHeading';
 import { Button } from './ui/Button';
@@ -29,7 +30,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`max-w-7xl mx-auto flex flex-col items-center justify-center px-4 pt-10 pb-10 md:pt-32 md:pb-20 relative overflow-hidden ${className}`}>
+    <div className={`min-h-[calc(100vh-10rem)] w-full max-w-7xl mx-auto flex flex-col items-center justify-center px-4 pt-20 pb-10 md:pt-32 md:pb-20 relative overflow-hidden ${className}`}>
+      {/* Amber Glow Background */}
+      <div
+        className="absolute inset-0 z-0 opacity-80"
+        style={{
+          backgroundImage: `
+            radial-gradient(125% 125% at 50% 10%, #ffffff 40%, #f59e0b 100%)
+          `,
+          backgroundSize: "100% 100%",
+        }}
+      />
+      
       {/* Dot Pattern Background */}
       <DotPattern 
         width={20}
