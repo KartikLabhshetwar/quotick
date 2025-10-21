@@ -6,6 +6,7 @@ import { CtaSection } from './AdditionalSections';
 import { Footer } from './Footer';
 import { HorizontalLine } from './HorizontalLine';
 import { VideoDemo } from './VideoDemo';
+import { HowToUse } from './HowToUse';
 
 interface LandingPageProps {
   className?: string;
@@ -42,9 +43,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ className = '' }) => {
         title="See Quotick in Action"
         description="Watch how Quotick automatically converts quotes to backticks as you type template literals"
       />
-      {/* <HorizontalLine /> */}
-      {/* Stats Section */}
-      {/* <StatsSection /> */}
+      
+      <HorizontalLine />
+      {/* How to Use Section */}
+      <HowToUse />
       
       <HorizontalLine />
 

@@ -8,3 +8,4 @@ export { HorizontalLine } from './HorizontalLine';
 export { VerticalLine } from './VerticalLine';
 export { GitHubStarButton } from './GitHubStarButton';
 export { VideoDemo } from './VideoDemo';
+export { HowToUse } from './HowToUse';
