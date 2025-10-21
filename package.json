@@ -2,7 +2,7 @@
   "name": "quotick",
   "displayName": "Quotick",
   "description": "Automatically converts quotes to backticks when typing template literals and reverts back when template syntax is removed",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "kartiklabhshetwar",
   "icon": "assets/icon.png",
   "repository": {
@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/KartikLabhshetwar/quotick/issues"
   },
-  "homepage": "https://github.com/KartikLabhshetwar/quotick#readme",
+  "homepage": "https://quotick.vercel.app",
   "keywords": [
     "template literal",
     "converter",
