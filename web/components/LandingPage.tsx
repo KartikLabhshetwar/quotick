@@ -2,7 +2,7 @@ import React from 'react';
 import { CustomNavbar } from './CustomNavbar';
 import { HeroSection } from './HeroSection';
 import { FeaturesSection } from './FeaturesSection';
-import { StatsSection, CtaSection } from './AdditionalSections';
+import { CtaSection } from './AdditionalSections';
 import { Footer } from './Footer';
 import { HorizontalLine } from './HorizontalLine';
 
@@ -25,18 +25,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ className = '' }) => {
       
       {/* Navigation */}
       <CustomNavbar />
+      <HorizontalLine />
       
       {/* Hero Section */}
+      <div className="m-16"> 
       <HeroSection 
-        title="Automatically convert quotes to backticks"
-        description="A VS Code extension that automatically converts quotes to backticks when typing template literals and reverts back when template syntax is removed. Smart quote conversion made simple."
+        title="Never retype quotes again"
+        description="Instantly converts quotes to backticks as you type. No more retyping template literals."
       />
-
-      <HorizontalLine />
+      </div>
+      {/* <HorizontalLine /> */}
       {/* Stats Section */}
-      <StatsSection />
+      {/* <StatsSection /> */}
       
       <HorizontalLine />
+
       {/* Features Section */}
       <FeaturesSection />
       

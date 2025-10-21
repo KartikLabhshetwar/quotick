@@ -47,19 +47,19 @@ interface CtaSectionProps {
 
 export const CtaSection: React.FC<CtaSectionProps> = ({ className = '' }) => {
   return (
-    <div className={`py-20 lg:py-32 ${className}`}>
-      <div className="max-w-4xl mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black dark:text-white mb-6">
+    <div className={`py-12 md:py-20 lg:py-32 ${className}`}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black dark:text-white mb-4 sm:mb-6 leading-tight">
           Ready to convert quotes to backticks?
         </h2>
-        <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+        <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
           Install the extension to start converting quotes to backticks.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4">
           <a href="https://marketplace.visualstudio.com/items?itemName=kartiklabhshetwar.quotick" 
              target="_blank"
              rel="noopener noreferrer"
-             className="px-8 py-3 bg-brand text-white rounded-lg font-semibold hover:bg-brand/90 transition-colors text-center">
+             className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-brand text-white rounded-lg font-semibold hover:bg-brand/90 transition-colors text-center text-sm sm:text-base">
             Install Extension
           </a>
         </div>

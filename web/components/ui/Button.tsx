@@ -6,6 +6,8 @@ interface ButtonProps {
   href?: string;
   onClick?: () => void;
   className?: string;
+  target?: string;
+  rel?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -14,6 +16,8 @@ export const Button: React.FC<ButtonProps> = ({
   href,
   onClick,
   className = '',
+  target,
+  rel,
 }) => {
   const baseClasses = 'block rounded-xl px-6 py-2 text-center text-sm font-medium transition duration-150 active:scale-[0.98] sm:text-base';
   
@@ -26,7 +30,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   if (href) {
     return (
-      <a href={href} className={classes}>
+      <a href={href} target={target} rel={rel} className={classes}>
         {children}
       </a>
     );
