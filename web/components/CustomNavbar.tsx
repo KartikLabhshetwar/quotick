@@ -2,6 +2,7 @@
 import React from 'react';
 import { Navbar, NavBody, MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle, NavbarLogo, NavbarButton } from './ui/resizable-navbar';
 import { GitHubStarButton } from './GitHubStarButton';
+import { Button } from './ui/Button';
 
 interface CustomNavbarProps {
   className?: string;
@@ -22,9 +23,9 @@ export const CustomNavbar: React.FC<CustomNavbarProps> = ({ className }) => {
             variant="default"
             className="text-sm"
           />
-          <NavbarButton href="https://marketplace.visualstudio.com/items?itemName=kartiklabhshetwar.quotick" target='_blank' rel="noopener noreferrer" variant="dark">
+          <Button href="https://marketplace.visualstudio.com/items?itemName=kartiklabhshetwar.quotick" target='_blank' rel="noopener noreferrer" variant="primary">
             Install Extension
-          </NavbarButton>
+          </Button>
         </div>
       </NavBody>
 
@@ -48,9 +49,9 @@ export const CustomNavbar: React.FC<CustomNavbarProps> = ({ className }) => {
               variant="default"
               className="text-sm"
             />
-            <NavbarButton href="https://marketplace.visualstudio.com/items?itemName=kartiklabhshetwar.quotick" target='_blank' rel="noopener noreferrer" variant="dark">
+            <Button href="https://marketplace.visualstudio.com/items?itemName=kartiklabhshetwar.quotick" target='_blank' rel="noopener noreferrer" variant="primary">
               Install Extension
-            </NavbarButton>
+            </Button>
           </div>
         </MobileNavMenu>
       </MobileNav>

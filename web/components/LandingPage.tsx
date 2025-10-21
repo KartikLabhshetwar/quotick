@@ -5,6 +5,7 @@ import { FeaturesSection } from './FeaturesSection';
 import { CtaSection } from './AdditionalSections';
 import { Footer } from './Footer';
 import { HorizontalLine } from './HorizontalLine';
+import { VideoDemo } from './VideoDemo';
 
 interface LandingPageProps {
   className?: string;
@@ -31,9 +32,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({ className = '' }) => {
       <div className="m-16"> 
       <HeroSection 
         title="Never retype quotes again"
+        highlightText="retype"
         description="Instantly converts quotes to backticks as you type. No more retyping template literals."
       />
       </div>
+
+      <HorizontalLine />
+      {/* Video Demo Section */}
+      <VideoDemo 
+        src="/quotick.mp4"
+        title="See Quotick in Action"
+        description="Watch how Quotick automatically converts quotes to backticks as you type template literals"
+      />
       {/* <HorizontalLine /> */}
       {/* Stats Section */}
       {/* <StatsSection /> */}

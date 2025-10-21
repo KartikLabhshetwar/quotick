@@ -29,7 +29,7 @@ export const HeroHeading: React.FC<HeroHeadingProps> = ({
           if (highlightText && word.toLowerCase() === highlightText.toLowerCase()) {
             return (
               <span key={index} className="text-brand">
-                {word}
+                {word}{' '}
               </span>
             );
           }

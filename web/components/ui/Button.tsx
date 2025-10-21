@@ -22,7 +22,7 @@ export const Button: React.FC<ButtonProps> = ({
   const baseClasses = 'block rounded-xl px-6 py-2 text-center text-sm font-medium transition duration-150 active:scale-[0.98] sm:text-base';
   
   const variantClasses = {
-    primary: 'bg-charcoal-900 text-white dark:bg-white dark:text-black',
+    primary: 'bg-brand text-white hover:bg-brand/90 dark:bg-brand dark:text-white',
     secondary: 'border-divide border bg-white text-black hover:bg-gray-300 dark:border-neutral-700 dark:bg-neutral-950 dark:text-white dark:hover:bg-neutral-800'
   };
 

@@ -19,7 +19,7 @@ interface HeroSectionProps {
 export const HeroSection: React.FC<HeroSectionProps> = ({
   tagline = "For fast moving developers.",
   title = "Never retype quotes again",
-  highlightText = "",
+  highlightText = "retype",
   description = "Instantly converts quotes to backticks as you type. No more retyping template literals.",
   primaryButtonText = "Install Extension",
   primaryButtonHref = "https://marketplace.visualstudio.com/items?itemName=kartiklabhshetwar.quotick",
