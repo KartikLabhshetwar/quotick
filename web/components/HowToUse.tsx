@@ -49,11 +49,7 @@ export const HowToUse: React.FC<HowToUseProps> = ({ className = '' }) => {
     visible: { 
       opacity: 1, 
       x: 0,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
+      scale: 1
     }
   };
 
@@ -100,6 +96,7 @@ export const HowToUse: React.FC<HowToUseProps> = ({ className = '' }) => {
                 key={index} 
                 className="flex items-start gap-6 group"
                 variants={stepVariants}
+                transition={{ duration: 0.6, ease: "easeOut" }}
               >
                 {/* Step Number */}
                 <div className="flex-shrink-0">
