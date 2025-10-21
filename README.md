@@ -34,6 +34,19 @@ const greeting = `Welcome ${user}!`;
 // Delete {: `Hello $name}` → automatically becomes "Hello $name}"
 ```
 
+**Svelte Support** - Works seamlessly with Svelte components, only triggering within `<script>` tags:
+
+```svelte
+<script lang="ts">
+  let name: string = "world";
+  const message = "Hello ${name}!"; // ← Converts to backticks
+</script>
+
+<div>
+  <h1>Hello {name}!</h1> <!-- ← Won't trigger here -->
+</div>
+```
+
 ## Features
 
 | Feature | Description |
@@ -42,7 +55,7 @@ const greeting = `Welcome ${user}!`;
 | **Smart Revert** | Automatically reverts backticks to quotes when `$` or `{` is removed |
 | **Smart detection** | Only converts strings with template literal syntax |
 | **Context aware** | Skips comments, imports, and invalid contexts |
-| **Multi-language** | Works with JS, TS, JSX, TSX files |
+| **Multi-language** | Works with JS, TS, JSX, TSX, and Svelte files |
 | **Real-time** | Converts as you type |
 | **Bidirectional** | Works both ways - quotes ↔ backticks |
 | **Configurable** | Enable/disable and customize behavior |
@@ -60,6 +73,7 @@ const greeting = `Welcome ${user}!`;
 - TypeScript (`.ts`)
 - JavaScript React (`.jsx`)
 - TypeScript React (`.tsx`)
+- **Svelte (`.svelte`)** - Only triggers within `<script>` tags, not in HTML template parts
 
 ## Commands
 
@@ -78,7 +92,8 @@ const greeting = `Welcome ${user}!`;
     "javascript",
     "typescript",
     "javascriptreact",
-    "typescriptreact"
+    "typescriptreact",
+    "svelte"
   ]
 }
 ```

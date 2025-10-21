@@ -2,7 +2,7 @@
   "name": "quotick",
   "displayName": "Quotick",
   "description": "Automatically converts quotes to backticks when typing template literals and reverts back when template syntax is removed",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "kartiklabhshetwar",
   "icon": "assets/icon.png",
   "repository": {
@@ -40,7 +40,8 @@
     "onLanguage:javascript",
     "onLanguage:typescript",
     "onLanguage:javascriptreact",
-    "onLanguage:typescriptreact"
+    "onLanguage:typescriptreact",
+    "onLanguage:svelte"
   ],
   "main": "./out/src/extension.js",
   "tags": [
@@ -103,7 +104,7 @@
         },
         "quotick.supportedLanguages": {
           "type": "array",
-          "default": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
+          "default": ["javascript", "typescript", "javascriptreact", "typescriptreact", "svelte"],
           "description": "File types to monitor for conversions"
         },
         "quotick.showWelcomeMessage": {

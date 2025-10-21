@@ -17,7 +17,8 @@ export class ConfigurationManager {
         "javascript",
         "typescript", 
         "javascriptreact",
-        "typescriptreact"
+        "typescriptreact",
+        "svelte"
       ]),
       addBracketsToProps: false, // Default for QuickTick
       autoRemoveTemplateString: true, // Default for QuickTick

@@ -4,6 +4,7 @@ import { QuoteDetector } from "./quoteDetector";
 import { TemplateLiteralDetector } from "./templateLiteralDetector";
 import { QuoteConverter } from "./converter";
 import { DocumentCopy, QuoteRange } from "./types";
+import { SvelteDetector } from "./svelteDetector";
 
 export class DocumentChangeHandler {
   private previousDocument: DocumentCopy | undefined = undefined;
@@ -27,6 +28,18 @@ export class DocumentChangeHandler {
       if (!ConfigurationManager.isLanguageSupported(e.document.languageId) ||
           ConfigurationManager.isFileExcluded(e.document.fileName)) {
         return;
+      }
+      
+      // For Svelte files, check if we're within a script tag
+      if (e.document.languageId === 'svelte') {
+        const cursorPosition = new vscode.Position(
+          changes.range.start.line,
+          changes.range.start.character
+        );
+        
+        if (!SvelteDetector.isWithinScriptTag(e.document, cursorPosition)) {
+          return; // Don't process changes outside of script tags in Svelte files
+        }
       }
       
       try {
