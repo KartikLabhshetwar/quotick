@@ -2,7 +2,7 @@
   "name": "quotick",
   "displayName": "Quotick",
   "description": "Automatically converts quotes to backticks when typing template literals and reverts back when template syntax is removed",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "publisher": "kartiklabhshetwar",
   "icon": "assets/icon.png",
   "repository": {
@@ -86,6 +86,21 @@
       {
         "command": "quotick.disableExtension",
         "title": "Disable Quotick",
+        "category": "Quotick"
+      },
+      {
+        "command": "quotick.wrapJSXAttributes",
+        "title": "Wrap JSX Attributes",
+        "category": "Quotick"
+      },
+      {
+        "command": "quotick.debugJSXDetection",
+        "title": "Debug JSX Detection",
+        "category": "Quotick"
+      },
+      {
+        "command": "quotick.testJSXBacktickConversion",
+        "title": "Test JSX Backtick Conversion",
         "category": "Quotick"
       }
     ],

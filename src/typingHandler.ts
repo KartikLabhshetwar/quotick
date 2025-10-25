@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { QuoteConverter } from './converter';
 import { TemplateLiteralDetector } from './templateLiteralDetector';
+import { AttributeHandler } from './attributeHandler';
+import { JSXDetector } from './jsxDetector';
 
 export class TypingHandler {
     private disposables: vscode.Disposable[] = [];
@@ -36,14 +38,30 @@ export class TypingHandler {
             const change = event.contentChanges[0];
             console.log('Quotick: Processing change:', change.text);
             
-            // Only process when '}' is typed (completing ${})
+            const position = change.range.start;
+            
+            // Check if we're in JSX context and should handle JSX attribute conversion
+            if (JSXDetector.isJSXSupportedLanguage(document.languageId)) {
+                console.log('Quotick: JSX context detected, checking for attribute conversion...');
+                
+                // Check for JSX attribute conversion on various triggers
+                const jsxResult = this.handleJSXAttributeConversion(document, position, change.text);
+                if (jsxResult && jsxResult.success) {
+                    console.log('Quotick: JSX attribute conversion triggered');
+                    setTimeout(() => {
+                        this.applyConversion(jsxResult);
+                    }, 50);
+                    return;
+                }
+            }
+            
+            // Only process when '}' is typed (completing ${}) for regular template literals
             if (change.text !== '}') {
                 console.log('Quotick: Not a closing brace, skipping');
                 return;
             }
             
             // Check if the change is preceded by '${'
-            const position = change.range.start;
             // Look at more text to find the ${} pattern
             const beforeText = document.getText(new vscode.Range(
                 new vscode.Position(position.line, Math.max(0, position.character - 10)),
@@ -163,6 +181,82 @@ export class TypingHandler {
         } catch (error) {
             console.error('QuickTick conversion error:', error);
         }
+    }
+    
+    private async applyConversion(result: any): Promise<void> {
+        try {
+            if (result.success && result.edit) {
+                const success = await vscode.workspace.applyEdit(result.edit);
+                
+                if (success) {
+                    const config = vscode.workspace.getConfiguration('quotick');
+                    const showNotifications = config.get('showNotifications', true);
+                    
+                    if (showNotifications) {
+                        vscode.window.showInformationMessage(
+                            'Quotick: JSX attribute converted',
+                            'OK'
+                        );
+                    }
+                } else {
+                    console.error('Quotick: Failed to apply JSX conversion');
+                }
+            } else {
+                console.error('Quotick: JSX conversion failed:', result.error);
+            }
+        } catch (error) {
+            console.error('Quotick JSX conversion error:', error);
+        }
+    }
+    
+    private handleJSXAttributeConversion(document: vscode.TextDocument, position: vscode.Position, typedCharacter: string): any {
+        console.log('Handling JSX attribute conversion:', {
+            typedCharacter,
+            position: `${position.line}:${position.character}`,
+            languageId: document.languageId
+        });
+        
+        // Check if we're in a JSX attribute context
+        const attributeInfo = JSXDetector.getJSXAttributeInfo(document, position);
+        if (!attributeInfo) {
+            console.log('No JSX attribute info found');
+            return null;
+        }
+        
+        console.log('Found JSX attribute:', {
+            attributeName: attributeInfo.attributeName,
+            attributeValue: attributeInfo.attributeValue,
+            hasInterpolation: attributeInfo.hasInterpolation,
+            isWrappedInBackticks: attributeInfo.isWrappedInBackticks,
+            isWrappedInBraces: attributeInfo.isWrappedInBraces
+        });
+        
+        // Check if we're typing inside backticks with interpolation
+        if (attributeInfo.isWrappedInBackticks && attributeInfo.hasInterpolation) {
+            // Trigger conversion when typing ${ or } inside backticks
+            if (typedCharacter === '{' || typedCharacter === '}') {
+                console.log('Triggering conversion for backtick attribute');
+                return AttributeHandler.handleJSXAttributeConversion(document, position, typedCharacter);
+            }
+        }
+        
+        // Check if we're typing ${ inside quotes
+        if (!attributeInfo.isWrappedInBackticks && !attributeInfo.isWrappedInBraces) {
+            const line = document.lineAt(position.line);
+            const text = line.text;
+            const charIndex = position.character;
+            
+            // Check if we just typed ${ 
+            if (typedCharacter === '{') {
+                const beforeText = text.substring(Math.max(0, charIndex - 2), charIndex);
+                if (beforeText === '${') {
+                    console.log('Triggering conversion for quote attribute');
+                    return AttributeHandler.handleJSXAttributeConversion(document, position, typedCharacter);
+                }
+            }
+        }
+        
+        return null;
     }
     
     public toggleAutoConvert(): void {

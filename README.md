@@ -47,12 +47,28 @@ const greeting = `Welcome ${user}!`;
 </div>
 ```
 
+**JSX/TSX Attribute Support** - Automatically converts backtick-wrapped JSX attributes with interpolation to proper JSX format:
+
+```tsx
+// Before
+<div className=`flex ${value}`></div>
+
+// After (automatic conversion)
+<div className={`flex ${value}`}></div>
+```
+
+**Real-time JSX conversion:**
+- Type `${` inside backticks → automatically converts to `{`backticks`}`
+- Type `}` to complete interpolation → triggers conversion
+- Works for any JSX attribute: `className`, `id`, `src`, etc.
+
 ## Features
 
 | Feature | Description |
 |---------|-------------|
 | **Auto-conversion** | Converts quotes to backticks when typing `${}` |
 | **Smart Revert** | Automatically reverts backticks to quotes when `$` or `{` is removed |
+| **JSX Attribute Support** | Converts backtick-wrapped JSX attributes to `{`backticks`}` format |
 | **Smart detection** | Only converts strings with template literal syntax |
 | **Context aware** | Skips comments, imports, and invalid contexts |
 | **Multi-language** | Works with JS, TS, JSX, TSX, and Svelte files |
@@ -80,6 +96,9 @@ const greeting = `Welcome ${user}!`;
 - `Quotick: Toggle Auto-Convert` - Enable/disable automatic conversion
 - `Quotick: Test Conversion` - Manually test conversion on current document
 - `Quotick: Toggle Revert Feature` - Enable/disable smart revert functionality
+- `Quotick: Wrap JSX Attributes` - Manually wrap JSX attributes with braces when interpolation is detected
+- `Quotick: Debug JSX Detection` - Debug JSX attribute detection at current cursor position
+- `Quotick: Test JSX Backtick Conversion` - Test JSX backtick-to-brace conversion at current position
 
 ## Configuration
 
