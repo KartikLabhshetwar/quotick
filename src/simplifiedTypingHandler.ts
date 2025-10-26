@@ -26,26 +26,147 @@ export class SimplifiedTypingHandler {
                 return;
             }
             
-            // Only process single character changes
-            if (event.contentChanges.length !== 1) {
-                return;
-            }
-            
-            const change = event.contentChanges[0];
-            const position = change.range.start;
-            
-            // Check if we should trigger conversion
-            if (JSXBacktickConverter.shouldTriggerConversion(document, position, change.text)) {
-                console.log('JSX Backtick Converter: Triggering conversion for character:', change.text);
+            // Process all changes
+            for (const change of event.contentChanges) {
+                const position = change.range.start;
                 
-                // Use a timeout to allow the document to settle
-                setTimeout(() => {
-                    this.performConversion(document, position);
-                }, 50);
+                // Handle backtick to brace conversion when typing } inside backticks
+                if (JSXBacktickConverter.shouldTriggerConversion(document, position, change.text)) {
+                    console.log('JSX Backtick Converter: Triggering conversion for character:', change.text);
+                    
+                    // Use a timeout to allow the document to settle
+                    setTimeout(() => {
+                        this.performConversion(document, position);
+                    }, 50);
+                    continue;
+                }
+                
+                // Handle automatic wrapping when typing } after ${ pattern in backticks
+                if (change.text === '}') {
+                    this.handleBraceCompletionInBackticks(document, position);
+                }
             }
         });
         
         this.disposables.push(disposable);
+    }
+    
+    /**
+     * Handle automatic wrapping of backticks with braces when interpolation is detected
+     */
+    private handleBraceCompletionInBackticks(document: vscode.TextDocument, position: vscode.Position): void {
+        try {
+            const editor = vscode.window.activeTextEditor;
+            if (!editor) {
+                return;
+            }
+
+            const line = document.lineAt(position.line);
+            const lineText = line.text;
+            
+            // Find the nearest backtick before the just-typed } character
+            const textBeforeBrace = lineText.substring(0, position.character - 1);
+            const backtickBeforeIndex = textBeforeBrace.lastIndexOf('`');
+            if (backtickBeforeIndex === -1) {
+                return;
+            }
+            
+            // Find the nearest backtick after the just-typed } character
+            const textAfterBrace = lineText.substring(position.character);
+            const backtickAfterIndex = textAfterBrace.indexOf('`');
+            if (backtickAfterIndex === -1) {
+                return;
+            }
+            
+            // Get the content between backticks
+            const contentStart = backtickBeforeIndex + 1;
+            const contentEnd = position.character - 1 + backtickAfterIndex;
+            const fullContent = lineText.substring(contentStart, contentEnd);
+            
+            // Check if content has interpolation pattern ${...}
+            if (!/\$\{[^}]*\}/.test(fullContent)) {
+                return;
+            }
+            
+            // Verify this is a JSX attribute: look for attribute name and = before the backtick
+            const beforeBacktick = lineText.substring(0, backtickBeforeIndex);
+            
+            // Find the attribute name before the backtick
+            const attributeMatch = beforeBacktick.match(/(\w+)\s*=\s*$/);
+            if (!attributeMatch) {
+                return;
+            }
+            
+            // Verify we're in a JSX context (look for < before the attribute)
+            const beforeAttribute = beforeBacktick.substring(0, beforeBacktick.length - attributeMatch[0].length);
+            const jsxTagMatch = beforeAttribute.match(/<[A-Za-z][A-Za-z0-9]*\s*[^>]*$/);
+            if (!jsxTagMatch) {
+                return;
+            }
+            
+            // Check if already wrapped in braces
+            const charBeforeBacktick = backtickBeforeIndex > 0 ? lineText.charAt(backtickBeforeIndex - 1) : ' ';
+            if (charBeforeBacktick === '{') {
+                return; // Already wrapped
+            }
+            
+            // Check if we're inside quotes
+            if (this.isInStringLiteral(lineText, backtickBeforeIndex)) {
+                return;
+            }
+            
+            // Wrap with braces
+            const edit = new vscode.WorkspaceEdit();
+            
+            // Insert opening brace before the backtick
+            edit.insert(
+                document.uri,
+                new vscode.Position(position.line, backtickBeforeIndex),
+                '{'
+            );
+            
+            // Insert closing brace after the last backtick (need to add 1 because we're inserting after)
+            edit.insert(
+                document.uri,
+                new vscode.Position(position.line, position.character + backtickAfterIndex + 1),
+                '}'
+            );
+            
+            vscode.workspace.applyEdit(edit).then(success => {
+                if (success) {
+                    console.log('Automatically wrapped backticks with braces');
+                    
+                    // Move cursor to after the closing brace
+                    setTimeout(() => {
+                        const finalPosition = new vscode.Position(
+                            position.line, 
+                            position.character + backtickAfterIndex + 2
+                        );
+                        editor.selection = new vscode.Selection(finalPosition, finalPosition);
+                    }, 50);
+                }
+            });
+        } catch (error) {
+            console.error('Error handling brace completion:', error);
+        }
+    }
+    
+    /**
+     * Check if a position is inside a string literal
+     */
+    private isInStringLiteral(lineText: string, index: number): boolean {
+        let inSingleQuote = false;
+        let inDoubleQuote = false;
+
+        for (let i = 0; i < index; i++) {
+            if (lineText[i] === "'" && (i === 0 || lineText[i - 1] !== "\\")) {
+                inSingleQuote = !inSingleQuote;
+            } else if (lineText[i] === '"' && (i === 0 || lineText[i - 1] !== "\\")) {
+                inDoubleQuote = !inDoubleQuote;
+            }
+        }
+        
+        return inSingleQuote || inDoubleQuote;
     }
     
     private async performConversion(document: vscode.TextDocument, position: vscode.Position): Promise<void> {
