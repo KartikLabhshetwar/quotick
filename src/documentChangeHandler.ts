@@ -384,8 +384,13 @@ export class DocumentChangeHandler {
       return false;
     }
 
+    // Check if previous document exists and has this line
+    if (!this.previousDocument || !this.previousDocument.lines[lineNumber]) {
+      return false;
+    }
+
     const currentLine = document.lineAt(lineNumber).text;
-    const previousLine = this.previousDocument!.lines[lineNumber].text;
+    const previousLine = this.previousDocument.lines[lineNumber].text;
     
     // Check if we're dealing with backticks
     if (!currentLine.includes('`')) {
