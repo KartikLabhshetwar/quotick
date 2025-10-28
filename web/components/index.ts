@@ -9,3 +9,4 @@ export { VerticalLine } from './VerticalLine';
 export { GitHubStarButton } from './GitHubStarButton';
 export { VideoDemo } from './VideoDemo';
 export { HowToUse } from './HowToUse';
+export { default as Testimonials } from './Testimonials';
